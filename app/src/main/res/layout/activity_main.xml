@@ -8,35 +8,9 @@
     android:layout_gravity="center_horizontal"
     tools:context=".MainActivity">
 
-    <Chronometer
-        android:id="@+id/record_timer"
 
-        android:layout_width="56dp"
-        android:layout_height="83dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/record_button"
-        android:layout_width="214dp"
-        android:layout_height="47dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:srcCompat="@android:drawable/presence_audio_online" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="387dp"
-        android:layout_height="30dp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/record_timer"
-        app:srcCompat="@android:drawable/ic_notification_overlay" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
