@@ -8,11 +8,15 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -30,14 +34,25 @@ public class AudioRecorderActivity extends AppCompatActivity {
     MediaRecorder mMediaRecorder;
     MediaPlayer mMediaPlayer;
 
+    private GyroscopeSensor mGyroscope;
+
+    private Handler mHandler = new Handler();
+
     final int REQUEST_PERMISSION_CODE = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_recorder);
-
         swMotionRecord = findViewById(R.id.switch_motion_record);
+
+        mGyroscope = new GyroscopeSensor(this);
+
+
+        if (!checkPermissionFromDevice())
+        {
+            requestPermissions();
+        }
 
         btnRecord = findViewById(R.id.button_record_start);
         btnStopRecord = findViewById(R.id.button_record_stop);
@@ -49,14 +64,52 @@ public class AudioRecorderActivity extends AppCompatActivity {
                 if(isChecked == true)
                 {
                     Toast.makeText(AudioRecorderActivity.this, "Motion record enabled", Toast.LENGTH_SHORT).show();
+
+                    mGyroscope = new GyroscopeSensor(AudioRecorderActivity.this);
+                    mGyroscope.register();
+
+                    mGyroscope.setListener(new GyroscopeSensor.Listener() {
+                        @Override
+                        public void onRotation(float rx, float ry, float rz) {
+
+
+                            if(rx < -1.0)
+                            {
+                                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                                toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2,150);
+                                mHandler.postDelayed(mRunnable, 1500);
+
+                            }
+                            else if (rx > 1.0f)
+                            {
+                                try{
+                                    mMediaRecorder.stop();
+                                    mMediaRecorder.release();
+                                    btnStopRecord.setEnabled(false);
+                                }
+                                catch(Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                //record stop code
+
+
+                               // btnRecord.setEnabled(true);
+                               // mHandler.removeCallbacks(mRunnable);
+                               Toast.makeText(AudioRecorderActivity.this, "Recording stopped.", Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+
+
                 }
             }
         });
 
-        if (!checkPermissionFromDevice())
-        {
-            requestPermissions();
-        }
+
+
+
 
 
         btnRecord.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +128,7 @@ public class AudioRecorderActivity extends AppCompatActivity {
                     //  + UUID.randomUUID().toString() + "audio_record.3gp";
 
                     mMediaRecorder = new MediaRecorder();
-                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
                     mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
 
@@ -116,6 +169,51 @@ public class AudioRecorderActivity extends AppCompatActivity {
 
     }
 
+    //runnable
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            //audio record code
+            if(checkPermissionFromDevice())
+            {
+
+
+                String newRecord = newRecNameEdit.getText().toString().trim();
+
+                pathSave = Environment.getExternalStorageDirectory()
+                        .getAbsolutePath() + "/"
+                        + "Recordings/" + newRecord +".3gp";
+
+                // pathSave = getExternalFilesDir("/").getAbsolutePath()
+                //  + UUID.randomUUID().toString() + "audio_record.3gp";
+
+                mMediaRecorder = new MediaRecorder();
+                mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+
+
+                mMediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+                mMediaRecorder.setOutputFile(pathSave);
+                btnStopRecord.setEnabled(true);
+
+                try {
+                    mMediaRecorder.prepare();
+                    mMediaRecorder.start();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                Toast.makeText(AudioRecorderActivity.this, "Recording started...", Toast.LENGTH_SHORT).show();
+
+            }
+            else{
+                requestPermissions();
+            }
+        }
+    };
+
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this, new String[]
                 {Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -144,5 +242,12 @@ public class AudioRecorderActivity extends AppCompatActivity {
         int record_audio_result = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
         return write_external_storage_result == PackageManager.PERMISSION_GRANTED &&
                 record_audio_result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mGyroscope.register();
     }
 }
