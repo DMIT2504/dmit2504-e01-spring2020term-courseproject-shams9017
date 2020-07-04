@@ -39,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AudioRecorderActivity.class);
             startActivity(intent);
         }
+        else if (item.getItemId() == R.id.menu_audio_player)
+        {
+            Intent intent = new Intent(this, AudioPlayerActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

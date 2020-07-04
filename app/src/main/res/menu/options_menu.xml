@@ -4,4 +4,7 @@
     <item
         android:id="@+id/menu_audio_record"
         android:title="Audio Record" />
+    <item
+        android:id="@+id/menu_audio_player"
+        android:title="Audio Player" />
 </menu>
