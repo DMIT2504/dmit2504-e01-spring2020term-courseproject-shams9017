@@ -3,7 +3,12 @@ package ca.nait.sensorsproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaActionSound;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -15,18 +20,22 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class AudioPlayerActivity extends AppCompatActivity implements View.OnClickListener {
+public class AudioPlayerActivity extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
 
     private ListView mListView;
     private String audioNames[];
+    private Switch switchEnableMotion;
 
     private Button btnPlay, btnForward, btnRewind;
     static private MediaPlayer mMediaPlayer;
@@ -35,11 +44,31 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
     private Handler mHandler;
     int positionj;
 
+    //sensor
+    private SensorManager mSensorManager;
+    private Sensor proximitySensor;
+    private Boolean isProxSensorAvailable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_player);
+
+        //proximity sensor
+
+        switchEnableMotion = findViewById(R.id.switch_motion_play);
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null)
+        {
+            proximitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+            isProxSensorAvailable = true;
+        }
+        else{
+            Toast.makeText(this, "Proximity sensor not available!", Toast.LENGTH_SHORT).show();
+            isProxSensorAvailable = false;
+        }
+
 
         btnPlay = findViewById(R.id.btnPlay);
         btnForward = findViewById(R.id.btnForward);
@@ -55,7 +84,9 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 
         try{
 
-            final ArrayList<File> audio = readAudio(new File(Environment.getExternalStorageDirectory() + "/Recordings"));
+            final ArrayList<File> audio = readAudio(Environment.getExternalStorageDirectory());
+            //final ArrayList<File> audio = readAudio(new File(Environment.getExternalStorageDirectory() + "/Recordings"));
+            //Collections.shuffle(audio);
             audioNames = new String[audio.size()];
             for (int i = 0; i<audio.size(); i++)
             {
@@ -145,6 +176,8 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 
 
 
+
+
     }
 
     private void changeSeekbar()
@@ -187,11 +220,10 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
                 arrayList.addAll(readAudio(file));
             }
             else{
-               // if(file.getName().endsWith(".mp3"))
-              //  {
-                //    arrayList.add(file);
-               // }
+               if(file.getName().endsWith(".mp3"))
+                {
                     arrayList.add(file);
+                }
             }
         }
         return arrayList;
@@ -223,6 +255,70 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    //implemented sensor methods
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+       // Toast.makeText(this, "values: " + event.values[0], Toast.LENGTH_SHORT).show();
+        if (event.values[0] == 0.0)
+        {
+            if (mMediaPlayer.isPlaying())
+            {
+                mMediaPlayer.pause();
+                //mMediaPlayer.release();
+                btnPlay.setText(">");
+                changeSeekbar();
+               // mSensorManager.unregisterListener(this);
+            }
+            else if (event.values[0] == 0.0)
+            {
+                if (!mMediaPlayer.isPlaying())
+                {
+                    mMediaPlayer.start();
+                    btnPlay.setText("||");
+                    changeSeekbar();
+
+                }
+            }
+
+
+            mSensorManager.registerListener(this, proximitySensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+            //Toast.makeText(AudioPlayerActivity.this, "prox sensor", Toast.LENGTH_SHORT).show();
+            //proximity sensor control
+            switchEnableMotion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+
+
+
+//                    if(isChecked == true)
+//                    {
+//                        Toast.makeText(AudioPlayerActivity.this, "Motion play enabled", Toast.LENGTH_SHORT).show();
+//                        if (mMediaPlayer.isPlaying())
+//                        {
+//                            mMediaPlayer.stop();
+//                            mMediaPlayer.release();
+//                            btnPlay.setText(">");
+//                            changeSeekbar();
+//                        }
+//                    }
+
+                }
+            });
+
+        }
+
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
+
 //    public void getAudio()
 //    {
 //        ContentResolver contentResolver = getContentResolver();
@@ -241,4 +337,27 @@ public class AudioPlayerActivity extends AppCompatActivity implements View.OnCli
 //        }
 //
 //    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (isProxSensorAvailable)
+        {
+            mSensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (isProxSensorAvailable)
+        {
+            mSensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+    }
 }
