@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MusicPlayerActivity">
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+
+        <ImageButton
+            android:id="@+id/imageButton_play"
+            android:layout_width="50dp"
+
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:backgroundTint="#FFFFFF"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/play_icon" />
+        <ImageButton
+            android:id="@+id/imageButton_pause"
+            android:layout_width="50dp"
+
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:backgroundTint="#FFFFFF"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/pause_icon" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

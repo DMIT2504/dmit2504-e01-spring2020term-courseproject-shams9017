@@ -1,29 +1,38 @@
 package ca.nait.sensorsproject;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+
 public class MainActivity extends AppCompatActivity {
 
-    private GyroscopeSensor mGyroscopeSensor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGyroscopeSensor = new GyroscopeSensor(this);
 
 
 
     }
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -41,7 +50,12 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (item.getItemId() == R.id.menu_audio_player)
         {
-            Intent intent = new Intent(this, AudioPlayerActivity.class);
+            Intent intent = new Intent(this, MusicPlayerActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_shake_detection)
+        {
+            Intent intent = new Intent(this, ShakeDetectionActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

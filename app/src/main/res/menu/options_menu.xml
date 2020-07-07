@@ -7,4 +7,7 @@
     <item
         android:id="@+id/menu_audio_player"
         android:title="Audio Player" />
+    <item
+        android:id="@+id/menu_shake_detection"
+        android:title="Item" />
 </menu>
