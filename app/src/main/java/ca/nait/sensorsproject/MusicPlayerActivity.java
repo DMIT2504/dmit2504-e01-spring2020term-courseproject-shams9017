@@ -82,7 +82,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
                 {
                     mMediaPlayer.release();
                     mMediaPlayer = null;
-                    Toast.makeText(MusicPlayerActivity.this, "player released", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(MusicPlayerActivity.this, "player released", Toast.LENGTH_SHORT).show();
                 }
 
                 int resId = getResources().getIdentifier(mArrayList.get(position), "raw", getPackageName());
@@ -92,29 +92,44 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
             }
         });
 
-        imgPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mMediaPlayer == null)
-                {
-                    mMediaPlayer = MediaPlayer.create(MusicPlayerActivity.this, R
-                            .raw.sample_audio2);
-                    mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            if (mMediaPlayer!= null)
-                            {
-                               mMediaPlayer.release();
-                               mMediaPlayer = null;
-                               Toast.makeText(MusicPlayerActivity.this, "player released", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                }
-                mMediaPlayer.start();
 
-            }
-        });
+            imgPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try{
+                        if (mMediaPlayer == null)
+                        {
+                            // mMediaPlayer = MediaPlayer.create(MusicPlayerActivity.this, R
+                            //.raw.sample_audio2);
+
+                            mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                @Override
+                                public void onCompletion(MediaPlayer mp) {
+                                    if (mMediaPlayer!= null)
+                                    {
+                                        mMediaPlayer.release();
+                                        mMediaPlayer = null;
+                                        // Toast.makeText(MusicPlayerActivity.this, "player released", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                        if(mMediaPlayer != null)
+                        {
+                            mMediaPlayer.start();
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
+
+
         imgPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +214,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
 
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -230,6 +247,16 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
             startActivity(intent);
         }
         else if (item.getItemId() == R.id.menu_shake_detection)
+        {
+            Intent intent = new Intent(this, ShakeDetectionActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_voice_to_text)
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_recs)
         {
             Intent intent = new Intent(this, ShakeDetectionActivity.class);
             startActivity(intent);

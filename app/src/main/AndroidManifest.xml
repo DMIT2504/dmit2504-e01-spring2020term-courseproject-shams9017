@@ -13,8 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShakeDetectionActivity"></activity>
-        <activity android:name=".MusicPlayerActivity"></activity>
+        <activity android:name=".RecordingsActivity">
+
+        </activity>
+        <activity android:name=".ShakeDetectionActivity" />
+        <activity android:name=".MusicPlayerActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />

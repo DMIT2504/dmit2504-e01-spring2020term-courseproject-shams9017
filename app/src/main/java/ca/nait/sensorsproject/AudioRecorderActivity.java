@@ -1,5 +1,4 @@
 package ca.nait.sensorsproject;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -17,6 +17,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -57,12 +60,14 @@ public class AudioRecorderActivity extends AppCompatActivity {
         btnRecord = findViewById(R.id.button_record_start);
         btnStopRecord = findViewById(R.id.button_record_stop);
         newRecNameEdit = findViewById(R.id.record_new_name);
+        btnStopRecord.setEnabled(false);
 
         swMotionRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked == true)
-                {
+                {   btnRecord.setEnabled(false);
+                    btnStopRecord.setEnabled(false);
                     Toast.makeText(AudioRecorderActivity.this, "Motion record enabled", Toast.LENGTH_SHORT).show();
 
                     mGyroscope = new GyroscopeSensor(AudioRecorderActivity.this);
@@ -71,21 +76,22 @@ public class AudioRecorderActivity extends AppCompatActivity {
                     mGyroscope.setListener(new GyroscopeSensor.Listener() {
                         @Override
                         public void onRotation(float rx, float ry, float rz) {
-
-
+                            btnStopRecord.setEnabled(false);
                             if(rx < -1.0)
                             {
-                                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+                                btnRecord.setEnabled(false);
+                                btnStopRecord.setEnabled(false);
+                                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 75);
                                 toneGen1.startTone(ToneGenerator.TONE_PROP_BEEP2,150);
                                 mHandler.postDelayed(mRunnable, 1500);
 
                             }
                             else if (rx > 1.0f)
                             {
+                                btnStopRecord.setEnabled(false);
                                 try{
                                     mMediaRecorder.stop();
                                     mMediaRecorder.release();
-                                    btnStopRecord.setEnabled(false);
                                 }
                                 catch(Exception e)
                                 {
@@ -94,9 +100,9 @@ public class AudioRecorderActivity extends AppCompatActivity {
                                 //record stop code
 
 
-                               // btnRecord.setEnabled(true);
-                               // mHandler.removeCallbacks(mRunnable);
-                               Toast.makeText(AudioRecorderActivity.this, "Recording stopped.", Toast.LENGTH_SHORT).show();
+                                // btnRecord.setEnabled(true);
+                                // mHandler.removeCallbacks(mRunnable);
+                                Toast.makeText(AudioRecorderActivity.this, "Recording stopped.", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -104,12 +110,13 @@ public class AudioRecorderActivity extends AppCompatActivity {
 
 
                 }
+                else{
+                    btnRecord.setEnabled(true);
+                    btnStopRecord.setEnabled(false);
+                    mGyroscope.unregister();
+                }
             }
         });
-
-
-
-
 
 
         btnRecord.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +172,6 @@ public class AudioRecorderActivity extends AppCompatActivity {
                 Toast.makeText(AudioRecorderActivity.this, "Recording stopped.", Toast.LENGTH_SHORT).show();
             }
         });
-
 
     }
 
@@ -249,5 +255,48 @@ public class AudioRecorderActivity extends AppCompatActivity {
         super.onResume();
 
         mGyroscope.register();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGyroscope.unregister();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_audio_record)
+        {
+            Intent intent = new Intent(this, AudioRecorderActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_audio_player)
+        {
+            Intent intent = new Intent(this, MusicPlayerActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_shake_detection)
+        {
+            Intent intent = new Intent(this, ShakeDetectionActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_voice_to_text)
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_recs)
+        {
+            Intent intent = new Intent(this, RecordingsActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

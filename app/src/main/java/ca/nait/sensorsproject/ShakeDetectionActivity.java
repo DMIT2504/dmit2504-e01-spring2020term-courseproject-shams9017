@@ -126,6 +126,16 @@ public class ShakeDetectionActivity extends AppCompatActivity {
             Intent intent = new Intent(this, ShakeDetectionActivity.class);
             startActivity(intent);
         }
+        else if (item.getItemId() == R.id.menu_voice_to_text)
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.menu_recs)
+        {
+            Intent intent = new Intent(this, RecordingsActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

@@ -9,5 +9,11 @@
         android:title="Audio Player" />
     <item
         android:id="@+id/menu_shake_detection"
-        android:title="Item" />
+        android:title="Shake Shuffle" />
+    <item
+        android:id="@+id/menu_voice_to_text"
+        android:title="Voice To Text List" />
+    <item
+        android:id="@+id/menu_recs"
+        android:title="Recordings" />
 </menu>
