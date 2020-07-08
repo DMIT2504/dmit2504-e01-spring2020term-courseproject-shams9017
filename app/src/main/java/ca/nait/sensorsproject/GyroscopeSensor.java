@@ -31,7 +31,8 @@ public class GyroscopeSensor {
             public void onSensorChanged(SensorEvent sensorEvent) {
                 if (listener != null)
                 {
-                    listener.onRotation(sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
+                    listener.onRotation(sensorEvent.values[0], sensorEvent.values[1],
+                            sensorEvent.values[2]);
                 }
 
             }
@@ -45,7 +46,8 @@ public class GyroscopeSensor {
 
     public void register()
     {
-        mSensorManager.registerListener(mSensorEventListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(mSensorEventListener, mSensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 

@@ -56,7 +56,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
             isProxSensorAvailable = true;
         }
         else{
-            Toast.makeText(this, "Proximity sensor not available!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Proximity sensor not available!",
+                    Toast.LENGTH_SHORT).show();
             isProxSensorAvailable = false;
         }
 
@@ -65,6 +66,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
 
         mListView = (ListView) findViewById(R.id.listview);
         mArrayList = new ArrayList<>();
+
         Field[] fields = R.raw.class.getFields();
         for (int i = 0; i< fields.length; i++)
         {
@@ -75,6 +77,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
         mListView.setAdapter(mAdapter);
 
         //listview onclick
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -82,10 +85,12 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
                 {
                     mMediaPlayer.release();
                     mMediaPlayer = null;
-                   // Toast.makeText(MusicPlayerActivity.this, "player released", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(MusicPlayerActivity.this, "player released",
+                    // Toast.LENGTH_SHORT).show();
                 }
 
-                int resId = getResources().getIdentifier(mArrayList.get(position), "raw", getPackageName());
+                int resId = getResources().getIdentifier(mArrayList.get(position),
+                        "raw", getPackageName());
                 mMediaPlayer = MediaPlayer.create(MusicPlayerActivity.this, resId);
                 mMediaPlayer.start();
 
@@ -109,7 +114,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
                                     {
                                         mMediaPlayer.release();
                                         mMediaPlayer = null;
-                                        // Toast.makeText(MusicPlayerActivity.this, "player released", Toast.LENGTH_SHORT).show();
+                                        // Toast.makeText(MusicPlayerActivity.this,
+                                        // "player released", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -127,8 +133,6 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
 
                 }
             });
-
-
 
         imgPause.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +154,8 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
 
         //switch to enable/disable prox sensor control
 
-        mSensorManager.registerListener((SensorEventListener) this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener((SensorEventListener) this, proximitySensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
 
     }
 
@@ -159,8 +164,10 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
     {
 
         try{
-            //  mSensorManager.registerListener(MusicPlayerActivity.this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-            Toast.makeText(MusicPlayerActivity.this, "values: " + event.values[0], Toast.LENGTH_SHORT).show();
+            //  mSensorManager.registerListener(MusicPlayerActivity.this,
+            //  proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+            Toast.makeText(MusicPlayerActivity.this, "values: " + event.values[0],
+                    Toast.LENGTH_SHORT).show();
             if (event.values[0] == 0.0) {
                 if (mMediaPlayer.isPlaying())
                 {
@@ -168,10 +175,7 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
                 }
 
                 else if (event.values[0] == 0.0) {
-                    if (!mMediaPlayer.isPlaying())
-                    {
 
-                    }
                     mMediaPlayer.start();
                 }
             }
@@ -214,15 +218,14 @@ public class MusicPlayerActivity extends AppCompatActivity implements SensorEven
 
     }
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
 
         if (isProxSensorAvailable)
         {
-            mSensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+            mSensorManager.registerListener(this, proximitySensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
         }
 
     }

@@ -3,7 +3,7 @@ package ca.nait.sensorsproject;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.media.Image;
+
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.view.Menu;
@@ -26,12 +26,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    SwipeRefreshLayout mSwipeRefreshLayout;
     ImageView speakButton;
     EditText speakText;
     ListView mListView;
     ArrayAdapter<String> adapter;
     ArrayList<String> voiceToTextItems;
+
     private static final int RECOGNIZER_RESULT = 1;
 
     private ListDatabase listDataBase;
@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (cursor.getCount() == 0)
         {
-            Toast.makeText(this, "Nothing found!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Nothing found!",
+                    Toast.LENGTH_SHORT).show();
         }
         else {
             while (cursor.moveToNext())
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, voiceToTextItems);
+        adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, voiceToTextItems);
         mListView.setAdapter(adapter);
 
         speakButton.setOnClickListener(new View.OnClickListener() {
@@ -95,26 +97,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+
         listDataBase = new ListDatabase(this);
         //now to check the request code and the result code.
         if(requestCode == RECOGNIZER_RESULT && resultCode == RESULT_OK)
         {
+
             speakText.setText("");
             //here we need code to get the input
-
             assert data != null;
+
             ArrayList<String> voiceMatches = new ArrayList<>();
             voiceMatches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
             speakText.setText(voiceMatches.get(0));
+
             String userVoiceInput = speakText.getText().toString();
             if (!userVoiceInput.isEmpty())
             {
                 listDataBase.insert(speakText.getText().toString());
-                //Toast.makeText(MainActivity.this, "New list item added!", Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(MainActivity.this, "New list item added!",
+                // Toast.LENGTH_SHORT).show();
             }
-
 
         }
         super.onActivityResult(requestCode, resultCode, data);

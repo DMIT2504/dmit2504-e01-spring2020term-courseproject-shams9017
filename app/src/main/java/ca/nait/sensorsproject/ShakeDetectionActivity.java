@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,15 +13,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
+
 public class ShakeDetectionActivity extends AppCompatActivity {
 
     private SensorManager mSensorManager;
@@ -38,11 +35,13 @@ public class ShakeDetectionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_shake_detection);
+
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        Objects.requireNonNull(mSensorManager).registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+        Objects.requireNonNull(mSensorManager).registerListener(mSensorListener,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
+
         mAccel = 10f;
         mAccelCurrent = SensorManager.GRAVITY_EARTH;
         mAccelLast = SensorManager.GRAVITY_EARTH;
@@ -56,7 +55,8 @@ public class ShakeDetectionActivity extends AppCompatActivity {
             mArrayList.add(fields[i].getName());
         }
 
-        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mArrayList);
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+                mArrayList);
         mListView.setAdapter(mAdapter);
     }
 
@@ -72,7 +72,8 @@ public class ShakeDetectionActivity extends AppCompatActivity {
             mAccel = mAccel * 0.9f + delta;
             if (mAccel > 12) {
                 //do what you want with the shake detection here.
-                Toast.makeText(getApplicationContext(), "Shake event detected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Shake event detected",
+                        Toast.LENGTH_SHORT).show();
                 mListView = (ListView) findViewById(R.id.listview_shuffle);
                 mArrayList = new ArrayList<>();
                 Field[] fields = R.raw.class.getFields();
@@ -81,7 +82,8 @@ public class ShakeDetectionActivity extends AppCompatActivity {
                     mArrayList.add(fields[i].getName());
                 }
 
-                mAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, mArrayList);
+                mAdapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_list_item_1, mArrayList);
                 mListView.setAdapter(mAdapter);
                 Collections.shuffle(mArrayList);
             }
@@ -92,7 +94,8 @@ public class ShakeDetectionActivity extends AppCompatActivity {
     };
     @Override
     protected void onResume() {
-        mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+        mSensorManager.registerListener(mSensorListener,
+                mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
         super.onResume();
     }

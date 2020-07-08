@@ -47,20 +47,19 @@ public class AudioRecorderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_recorder);
+
         swMotionRecord = findViewById(R.id.switch_motion_record);
+        btnRecord = findViewById(R.id.button_record_start);
+        btnStopRecord = findViewById(R.id.button_record_stop);
+        newRecNameEdit = findViewById(R.id.record_new_name);
+        btnStopRecord.setEnabled(false);
 
         mGyroscope = new GyroscopeSensor(this);
-
 
         if (!checkPermissionFromDevice())
         {
             requestPermissions();
         }
-
-        btnRecord = findViewById(R.id.button_record_start);
-        btnStopRecord = findViewById(R.id.button_record_stop);
-        newRecNameEdit = findViewById(R.id.record_new_name);
-        btnStopRecord.setEnabled(false);
 
         swMotionRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -102,7 +101,8 @@ public class AudioRecorderActivity extends AppCompatActivity {
 
                                 // btnRecord.setEnabled(true);
                                 // mHandler.removeCallbacks(mRunnable);
-                                Toast.makeText(AudioRecorderActivity.this, "Recording stopped.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AudioRecorderActivity.this,
+                                        "Recording stopped.", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -138,7 +138,6 @@ public class AudioRecorderActivity extends AppCompatActivity {
                     mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
                     mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 
-
                     mMediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
                     mMediaRecorder.setOutputFile(pathSave);
                     btnStopRecord.setEnabled(true);
@@ -152,7 +151,8 @@ public class AudioRecorderActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    Toast.makeText(AudioRecorderActivity.this, "Recording started...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AudioRecorderActivity.this,
+                            "Recording started...", Toast.LENGTH_SHORT).show();
 
                 }
                 else{
@@ -169,7 +169,8 @@ public class AudioRecorderActivity extends AppCompatActivity {
                 mMediaRecorder.release();
                 btnStopRecord.setEnabled(false);
                 btnRecord.setEnabled(true);
-                Toast.makeText(AudioRecorderActivity.this, "Recording stopped.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AudioRecorderActivity.this,
+                        "Recording stopped.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -182,8 +183,6 @@ public class AudioRecorderActivity extends AppCompatActivity {
             //audio record code
             if(checkPermissionFromDevice())
             {
-
-
                 String newRecord = newRecNameEdit.getText().toString().trim();
 
                 pathSave = Environment.getExternalStorageDirectory()
@@ -211,7 +210,8 @@ public class AudioRecorderActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                Toast.makeText(AudioRecorderActivity.this, "Recording started...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AudioRecorderActivity.this,
+                        "Recording started...", Toast.LENGTH_SHORT).show();
 
             }
             else{
@@ -227,7 +227,8 @@ public class AudioRecorderActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (requestCode)
         {
             case REQUEST_PERMISSION_CODE:
@@ -244,7 +245,8 @@ public class AudioRecorderActivity extends AppCompatActivity {
     }
 
     private boolean checkPermissionFromDevice() {
-        int write_external_storage_result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int write_external_storage_result =
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int record_audio_result = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
         return write_external_storage_result == PackageManager.PERMISSION_GRANTED &&
                 record_audio_result == PackageManager.PERMISSION_GRANTED;
